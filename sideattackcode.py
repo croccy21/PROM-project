@@ -40,6 +40,8 @@ def checkingnum():
             pulldown(index)
             time.sleep(10/1000)
             while loadrising == False:
+                if (GPIO.input(14) == HIGH):
+                    loadrising = next_load()
                 counter +=1
                 time.sleep(10/1000)
             if (counter <= 20):
@@ -80,6 +82,7 @@ def pulldown(index):
         GPIO.output(onec,1)
         GPIO.output(twoc,1)
         GPIO.output(threec,0)
+
 
 
 def next_load():
