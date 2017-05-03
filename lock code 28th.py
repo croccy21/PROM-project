@@ -154,10 +154,8 @@ def main():
         for index in range (4):
             pressed = poll_row(nine,ten,eleven)
             #this gets which column the person has pressed
-            print(str(nine) + str(ten) +str(eleven))
             time.sleep(1)
             if(pressed!= 100):
-                print(key_board[index][pressed])
                 time.sleep(10/100)
             if(pressed == 100):
                 print("Nothing was pressed")
@@ -178,6 +176,7 @@ def main():
                  ledset("red",False)
                  position = 0 #sends them back to the start
                  timeout = 0
+            print("{0}: {1} --> {2}".format(index, str(nine) + str(ten) +str(eleven), key_board[index][pressed]))
             if (index == 0):
                 eleven = 1
                 ten = 0
@@ -187,7 +186,6 @@ def main():
             elif (index == 2):
                 eleven == 1
                 ten == 1
-            print(str(nine) + str(ten) +str(eleven) + " This is just after they've changed")
             time.sleep(1)
         timeout += 30
         position = timer(timeout,position)
