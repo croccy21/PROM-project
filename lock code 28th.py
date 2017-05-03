@@ -155,10 +155,10 @@ def main():
             #this gets which column the person has pressed
             if(pressed!= 100):
                 print(key_board[index][pressed])
-		time.sleep(10/100)
-	    if(pressed == 100):
-		print("Nothing was pressed")
-		time.sleep(10/100)
+    		time.sleep(10/100)
+    	    if(pressed == 100):
+        		print("Nothing was pressed")
+        		time.sleep(10/100)
             elif (key_board[index][pressed] == password[position]):
                 timeout = 0
                 position +=1
@@ -175,13 +175,13 @@ def main():
                  ledset("red",False)
                  position = 0 #sends them back to the start
                  timeout = 0
-            if (index == 1):
+            if (index == 0):
                 eleven = 1
                 ten = 0
-            elif (index == 2):
+            elif (index == 1):
                 eleven == 0
                 ten = 1
-            elif (index == 3):
+            elif (index == 2s):
                 eleven == 1
                 ten == 1
         timeout += 30
@@ -191,5 +191,3 @@ try:
     main()
 except:
     GPIO.cleanup()
-
-
