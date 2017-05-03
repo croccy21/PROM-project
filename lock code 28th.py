@@ -187,7 +187,7 @@ def main():
             elif (index == 2):
                 eleven == 1
                 ten == 1
-            print(str(nine) + str(ten) +str(eleven))
+            print(str(nine) + str(ten) +str(eleven) + " This is just after they've changed")
             time.sleep(1)
         timeout += 30
         position = timer(timeout,position)
