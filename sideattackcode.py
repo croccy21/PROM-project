@@ -50,8 +50,11 @@ def checkingnum():
                     pulldown(indexes[i])
 
             index+=1
+            index = index % 12
+            
         code.append(currentnum)
         indexes.append(index-1)
+
 def pulldown(index):
     if (index <= 2):
         GPIO.wait_for_edge(load, GPIO.RISING)
