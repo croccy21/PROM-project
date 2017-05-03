@@ -168,7 +168,7 @@ def main():
                     time.sleep(3)
                     ledset("green",False)
                     position = 0
-            else:
+            if (pressed != 100):
                  #runs if the wrong number has been entered
                  ledset("red",True)
                  time.sleep(1)
