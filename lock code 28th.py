@@ -158,7 +158,6 @@ def main():
             if(pressed!= 100):
                 time.sleep(10/100)
             if(pressed == 100):
-                print("Nothing was pressed")
                 time.sleep(10/100)
             elif (key_board[index][pressed] == password[position]):
                 timeout = 0
@@ -176,7 +175,7 @@ def main():
                  ledset("red",False)
                  position = 0 #sends them back to the start
                  timeout = 0
-            print("{0}: {1} --> {2}".format(index, str(nine) + str(ten) +str(eleven), key_board[index][pressed]))
+            print("{0}: {1} --> {2}".format(index, str(nine) + str(ten) +str(eleven), key_board[index][pressed] if pressed != 100 else "N"))
             if (index == 0):
                 eleven = 1
                 ten = 0
