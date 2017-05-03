@@ -155,6 +155,7 @@ def main():
             pressed = poll_row(nine,ten,eleven)
             #this gets which column the person has pressed
             print(str(nine) + str(ten) +str(eleven))
+            time.sleep(1)
             if(pressed!= 100):
                 print(key_board[index][pressed])
                 time.sleep(10/100)
