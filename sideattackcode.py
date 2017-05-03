@@ -28,6 +28,7 @@ enable = 15
 
 def checkingnum():
     code = []
+    indexes = []
     digits = ["1","2","3","4","5","6","7","8","9","*","0","#"]
     for i in range (4):
         index = 0
@@ -43,9 +44,14 @@ def checkingnum():
                 time.sleep(10/1000)
             if (counter <= 20):
                 red = False
+
+            if red == True:
+                for i in range (len(code)):
+                    pulldown(indexes[i])
+
             index+=1
         code.append(currentnum)
-
+        indexes.append(index-1)
 def pulldown(index):
     if (index <= 2):
         GPIO.wait_for_edge(load, GPIO.RISING)
