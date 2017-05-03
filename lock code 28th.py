@@ -150,7 +150,7 @@ def main():
         ten = 0
         eleven = 0
         #this loop polls each of the rows in order
-        for index in range (3):
+        for index in range (4):
             pressed = poll_row(nine,ten,eleven)
             #this gets which column the person has pressed
             if(pressed!= 100):
@@ -181,7 +181,7 @@ def main():
             elif (index == 1):
                 eleven == 0
                 ten = 1
-            elif (index == 2s):
+            elif (index == 2):
                 eleven == 1
                 ten == 1
         timeout += 30
