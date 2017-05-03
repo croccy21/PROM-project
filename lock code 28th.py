@@ -180,11 +180,11 @@ def main():
                 eleven = 1
                 ten = 0
             elif (index == 1):
-                eleven == 0
+                eleven = 0
                 ten = 1
             elif (index == 2):
-                eleven == 1
-                ten == 1
+                eleven = 1
+                ten = 1
             time.sleep(1)
         timeout += 30
         position = timer(timeout,position)
