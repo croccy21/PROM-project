@@ -154,6 +154,7 @@ def main():
         for index in range (4):
             pressed = poll_row(nine,ten,eleven)
             #this gets which column the person has pressed
+            print(str(nine) + str(ten) +str(eleven))
             if(pressed!= 100):
                 print(key_board[index][pressed])
                 time.sleep(10/100)
@@ -163,7 +164,7 @@ def main():
             elif (key_board[index][pressed] == password[position]):
                 timeout = 0
                 position +=1
-                if (position >=3):
+                if (position >3):
                 #runs if the whole password has been entered
                     ledset("green",True)
                     time.sleep(3)
