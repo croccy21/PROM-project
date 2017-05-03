@@ -66,6 +66,7 @@ def ledset(colour, on_off):
 
 def timer(timeout,position):
     #needs better timing
+    #wait= 1
     onboardgpio = [5,6,12,13,16,19,20,26]
     if (timeout >= 0.375):
         GPIO.output(onboardgpio[0],0)
@@ -84,7 +85,7 @@ def timer(timeout,position):
     elif (timeout >= 0.375*8):
         GPIO.output(onboardgpio[7],0)
         position = 0
-	GPIO.output(onboardgpio[0],1)
+        GPIO.output(onboardgpio[0],1)
         GPIO.output(onboardgpio[1],1)
         GPIO.output(onboardgpio[2],1)
         GPIO.output(onboardgpio[3],1)
@@ -155,10 +156,10 @@ def main():
             #this gets which column the person has pressed
             if(pressed!= 100):
                 print(key_board[index][pressed])
-    		time.sleep(10/100)
-    	    if(pressed == 100):
-        		print("Nothing was pressed")
-        		time.sleep(10/100)
+                time.sleep(10/100)
+            if(pressed == 100):
+                print("Nothing was pressed")
+                time.sleep(10/100)
             elif (key_board[index][pressed] == password[position]):
                 timeout = 0
                 position +=1
