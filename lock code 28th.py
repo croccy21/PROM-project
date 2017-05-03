@@ -109,8 +109,8 @@ def poll_row(nine,ten,eleven):
 
     #Sets them to the desired value and then loads the registers
     GPIO.output(9,nine)
-    GPIO.output(10,ten)
     GPIO.output(11,eleven)
+    GPIO.output(10,ten)
     time.sleep(10/100)
     GPIO.output(14,1) # loading
     time.sleep(10/100)
