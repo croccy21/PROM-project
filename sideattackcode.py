@@ -8,9 +8,9 @@
 #           needs to only see the load line to check if one second has passed
 #       pulldown(index):
 #           pulls down one of the three columns based on what index checkingnum has passed it. but first it makes sure the pi is activating the right row
-#       nextload():
+#       next_red():
 #           This function is an interrupt that is triggered on a rising edge, effectively telling the program
-#           how long it is between loads, if this is around one second then it will return that a red light has turned on
+#           how long it is between reds, if this is around one second then it will return that a red light has turned on
 # Author:      callum
 #
 # Created:     25/04/2017
@@ -25,7 +25,15 @@ twoc = 10
 threec = 11
 load = 14
 enable = 15
-
+''' Old timing code
+            while loadrising == False:
+                if (GPIO.input(14) == HIGH):
+                    loadrising = next_red()
+                counter +=1
+                time.sleep(10/1000)
+            if (counter <= 20):
+                red = False
+'''
 def checkingnum():
     code = []
     indexes = []
@@ -39,13 +47,7 @@ def checkingnum():
             currentnum = digits[index]
             pulldown(index)
             time.sleep(10/1000)
-            while loadrising == False:
-                if (GPIO.input(14) == HIGH):
-                    loadrising = next_load()
-                counter +=1
-                time.sleep(10/1000)
-            if (counter <= 20):
-                red = False
+
 
             if red == True:
                 for i in range (len(code)):
@@ -53,10 +55,11 @@ def checkingnum():
 
             index+=1
             index = index % 12
-            
+
         code.append(currentnum)
         indexes.append(index-1)
 
+''' now pointless
 def pulldown(index):
     if (index <= 2):
         GPIO.wait_for_edge(load, GPIO.RISING)
@@ -82,10 +85,28 @@ def pulldown(index):
         GPIO.output(onec,1)
         GPIO.output(twoc,1)
         GPIO.output(threec,0)
+'''
+
+def which_column(index):
+    if ((index == 0) or (index ==3)or(index ==6)):
+        GPIO.wait_for_edge(enable, GPIO.FALLING)
+        GPIO.output(onec,0)
+        GPIO.output(twoc,1)
+        GPIO.output(threec,1)
+    elif (index == 1 or 4 or 7):
+        GPIO.wait_for_edge(enable, GPIO.FALLING)
+        GPIO.output(onec,1)
+        GPIO.output(twoc,0)
+        GPIO.output(threec,1)
+    elif (index == 2 or 5 or 8):
+        GPIO.wait_for_edge(enable, GPIO.FALLING)
+        GPIO.output(onec,1)
+        GPIO.output(twoc,1)
+        GPIO.output(threec,0)
 
 
 
-def next_load():
-    nonlocal loadrising
-    loadrising = True
-    return loadrising
+def next_red():
+    nonlocal redoff
+    redoff = True
+    return redoff
