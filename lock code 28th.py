@@ -186,7 +186,7 @@ def main():
             elif (index == 2):
                 eleven = 1
                 ten = 1
-            time.sleep(1)
+            #time.sleep(1)
         timeout += 30/1000
         position = timer(timeout,position)
 
