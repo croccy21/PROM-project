@@ -5,12 +5,11 @@
 #Functions:
 #       checkingnum():
 #           The function that runs through all the numbers and stores each correct digit. has to go back to one after each correct digit.
-#           needs to only see the load line to check if one second has passed
+#           needs to
 #       pulldown(index):
 #           pulls down one of the three columns based on what index checkingnum has passed it. but first it makes sure the pi is activating the right row
 #       next_red():
-#           This function is an interrupt that is triggered on a rising edge, effectively telling the program
-#           how long it is between reds, if this is around one second then it will return that a red light has turned on
+#           This function ets the program know when the red LED is on
 # Author:      callum
 #
 # Created:     25/04/2017
@@ -19,11 +18,12 @@
 #-------------------------------------------------------------------------------
 import gpio
 import time
+import smbus
 
 onec = 9
 twoc = 10
 threec = 11
-load = 14
+red = 20 #NOT THE ACTUAL VALUE
 enable = 15
 ''' Old timing code
             while loadrising == False:
@@ -42,7 +42,7 @@ def checkingnum():
         index = 0
         red = True
         while red == True:
-            loadrising= False
+            redoff= False
             counter = 0
             currentnum = digits[index]
             pulldown(index)
