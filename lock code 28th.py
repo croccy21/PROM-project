@@ -85,14 +85,14 @@ def timer(timeout,position):
     elif (timeout >= 0.375*8):
         GPIO.output(onboardgpio[7],1)
         position = 0
-        GPIO.output(onboardgpio[0],1)
-        GPIO.output(onboardgpio[1],1)
-        GPIO.output(onboardgpio[2],1)
-        GPIO.output(onboardgpio[3],1)
-        GPIO.output(onboardgpio[4],1)
-        GPIO.output(onboardgpio[5],1)
-        GPIO.output(onboardgpio[6],1)
-        GPIO.output(onboardgpio[7],1)
+        GPIO.output(onboardgpio[0],0)
+        GPIO.output(onboardgpio[1],0)
+        GPIO.output(onboardgpio[2],0)
+        GPIO.output(onboardgpio[3],0)
+        GPIO.output(onboardgpio[4],0)
+        GPIO.output(onboardgpio[5],0)
+        GPIO.output(onboardgpio[6],0)
+        GPIO.output(onboardgpio[7],0)
     return position
 
 
