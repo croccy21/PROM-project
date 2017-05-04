@@ -21,14 +21,14 @@ GPIO.setup(20,GPIO.OUT)
 GPIO.setup(26,GPIO.OUT)
 
 
-GPIO.output(5,1)
-GPIO.output(6,1)
-GPIO.output(12,1)
-GPIO.output(13,1)
-GPIO.output(16,1)
-GPIO.output(19,1)
-GPIO.output(20,1)
-GPIO.output(26,1)
+GPIO.output(5,0)
+GPIO.output(6,0)
+GPIO.output(12,0)
+GPIO.output(13,0)
+GPIO.output(16,0)
+GPIO.output(19,0)
+GPIO.output(20,0)
+GPIO.output(26,0)
 #this needs sleeps, and lots of them
 def read_password():
     #Code for reading the password
@@ -69,21 +69,21 @@ def timer(timeout,position):
     #wait= 1
     onboardgpio = [5,6,12,13,16,19,20,26]
     if (timeout >= 0.375):
-        GPIO.output(onboardgpio[0],0)
+        GPIO.output(onboardgpio[0],1)
     elif (timeout >= 0.375*2):
-        GPIO.output(onboardgpio[1],0)
+        GPIO.output(onboardgpio[1],1)
     elif (timeout >= 0.375*3):
-        GPIO.output(onboardgpio[2],0)
+        GPIO.output(onboardgpio[2],1)
     elif (timeout >= 0.375*4):
-        GPIO.output(onboardgpio[3],0)
+        GPIO.output(onboardgpio[3],1)
     elif (timeout >= 0.375*5):
-        GPIO.output(onboardgpio[4],0)
+        GPIO.output(onboardgpio[4],1)
     elif (timeout >= 0.375*6):
-        GPIO.output(onboardgpio[5],0)
+        GPIO.output(onboardgpio[5],1)
     elif (timeout >= 0.375*7):
-        GPIO.output(onboardgpio[6],0)
+        GPIO.output(onboardgpio[6],1)
     elif (timeout >= 0.375*8):
-        GPIO.output(onboardgpio[7],0)
+        GPIO.output(onboardgpio[7],1)
         position = 0
         GPIO.output(onboardgpio[0],1)
         GPIO.output(onboardgpio[1],1)
@@ -186,7 +186,7 @@ def main():
                 eleven = 1
                 ten = 1
             time.sleep(1)
-        timeout += 30
+        timeout += 30/1000
         position = timer(timeout,position)
 
 try:
