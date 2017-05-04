@@ -155,7 +155,7 @@ def main():
         for index in range (4):
             pressed = poll_row(nine,ten,eleven)
             #this gets which column the person has pressed
-            time.sleep(1)
+            #time.sleep(1)
             if(pressed!= 100):
                 time.sleep(10/100)
             if(pressed == 100):
