@@ -4,7 +4,7 @@ import time
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 #The length of sleeps
-length = 700
+length = 1000
 #Settting up the load and output-enable (only needs to be done once because always output
 GPIO.setup(14,GPIO.OUT) #load
 GPIO.setup(15,GPIO.OUT) #enable
