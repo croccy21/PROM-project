@@ -4,7 +4,7 @@ import time
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 #The length of sleeps
-length = 1000
+length = 500
 #Settting up the load and output-enable (only needs to be done once because always output
 GPIO.setup(14,GPIO.OUT) #load
 GPIO.setup(15,GPIO.OUT) #enable
@@ -195,7 +195,7 @@ def main(length):
 
 
 def sleepytime(length): #assumes length is an int in ms
-    wake = time.time()+length/1000
+    wake = time.time()+0.0005+length/1000
     while wake > time.time():
         time.sleep(length/10000)
 ''' Optional stuff
