@@ -146,6 +146,7 @@ def main(length):
     key_board = [["1","2","3"],["4","5","6"],["7","8","9"],["*","0","#"]]
     password = read_password()
     wrong = False;
+    gap = 0 # used for software debouncing
     position = 0 #the point in the password the person is at
     #the main loop the repeatedly polls each line
     timeout = 0 # this counts up continously lighting up the onboard leds until all are lit then resets position
@@ -153,7 +154,9 @@ def main(length):
         nine = 0
         ten = 0
         eleven = 0
+        
         #this loop polls each of the rows in order
+        
         for index in range (4):
             pressed = poll_row(nine,ten,eleven,length)
             #this gets which column the person has pressed
@@ -162,9 +165,16 @@ def main(length):
                 sleepytime(length)
             if(pressed == 100):
                 sleepytime(length)
+                gap += 1
+            elif (gap < 16):
+                sleepytime(length)
+                gap = 0 # stops other presses being registered for a bit
             elif (key_board[index][pressed] == password[position]):
+                gap = 0 # stops other presses being registered for a bit
                 timeout = 0
                 position +=1
+                print("{0}: {1} --> {2}".format(index, str(nine) + str(ten) +str(eleven), key_board[index][pressed] if pressed != 100 else "N"))
+            
                 if (position >3):
                 #runs if the whole password has been entered
                     ledset("green",True)
@@ -172,6 +182,7 @@ def main(length):
                     ledset("green",False)
                     position = 0
             else:
+                 gap = 0 # stops other presses being registered for a bit
                  #runs if the wrong number has been entered
                  ledset("red",True)
                  sleepytime(1000)
@@ -179,7 +190,6 @@ def main(length):
                  position = 0 #sends them back to the start
                  timeout = 0
 
-            print("{0}: {1} --> {2}".format(index, str(nine) + str(ten) +str(eleven), key_board[index][pressed] if pressed != 100 else "N"))
             if (index == 0):
                 eleven = 1
                 ten = 0
