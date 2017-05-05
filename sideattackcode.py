@@ -16,97 +16,61 @@
 # Copyright:   (c) callum 2017
 # Licence:     <your licence>
 #-------------------------------------------------------------------------------
-import gpio
 import time
 import smbus
 
-onec = 9
-twoc = 10
-threec = 11
-red = 20 #NOT THE ACTUAL VALUE
-enable = 15
-''' Old timing code
-            while loadrising == False:
-                if (GPIO.input(14) == HIGH):
-                    loadrising = next_red()
-                counter +=1
-                time.sleep(10/1000)
-            if (counter <= 20):
-                red = False
-'''
-def checkingnum():
+BUS_ADDRESS = 0x38
+LOCK_PICK_ADDRESS = 0b01110000
+INPUT_MASK = 0x8f
+
+DIGITS = ["1","2","3","4","5","6","7","8","9","*","0","#"]
+# "digit": (row bit, column bit)
+DIGIT_MAP = {"1":(0,0),"2":(0,1),"3":(0,2),
+             "4":(1,0),"5":(1,1),"6":(1,2),
+             "7":(2,0),"8":(2,1),"9":(2,2),
+             "*":(3,0),"0":(3,1),"#":(3,2)}
+
+def main():
+    bus = smbus.SMBus(BUS_ADDRESS)
+
+def find_code(bus):
     code = []
-    indexes = []
-    digits = ["1","2","3","4","5","6","7","8","9","*","0","#"]
-    for i in range (4):
-        index = 0
-        red = True
-        while red == True:
-            redoff= False
-            counter = 0
-            currentnum = digits[index]
-            pulldown(index)
-            time.sleep(10/1000)
 
+    for i in range(4):
+        found = False:
+        digit_indix = 0
+        while not found and digit_indix<len(DIGITS):
+            #send code so far
+            for digit in code:
+                send_digit(digit, bus)
 
-            if red == True:
-                for i in range (len(code)):
-                    pulldown(indexes[i])
+            #test next digit
+            digit = DIGITS[digit_indix]
+            send_digit(digit, bus)
 
-            index+=1
-            index = index % 12
+            resp = get_line(bus, 7)
 
-        code.append(currentnum)
-        indexes.append(index-1)
+            if resp:
+                code.append(digit)
+                found = True
+            else:
+                digit_index += 1
+    return code
 
-''' now pointless
-def pulldown(index):
-    if (index <= 2):
-        GPIO.wait_for_edge(load, GPIO.RISING)
-    elif (index <= 5):
-        GPIO.wait_for_edge(load, GPIO.RISING)
-        GPIO.wait_for_edge(load, GPIO.RISING)
-    elif (index <= 8):
-        GPIO.wait_for_edge(load, GPIO.RISING)
-        GPIO.wait_for_edge(load, GPIO.RISING)
-        GPIO.wait_for_edge(load, GPIO.RISING)
-    if ((index == 0) or (index ==3)or(index ==6)):
-        GPIO.wait_for_edge(enable, GPIO.FALLING)
-        GPIO.output(onec,0)
-        GPIO.output(twoc,1)
-        GPIO.output(threec,1)
-    elif (index == 1 or 4 or 7):
-        GPIO.wait_for_edge(enable, GPIO.FALLING)
-        GPIO.output(onec,1)
-        GPIO.output(twoc,0)
-        GPIO.output(threec,1)
-    elif (index == 2 or 5 or 8):
-        GPIO.wait_for_edge(enable, GPIO.FALLING)
-        GPIO.output(onec,1)
-        GPIO.output(twoc,1)
-        GPIO.output(threec,0)
-'''
+def get_line(bus, bit):
+    bus.write_byte(INPUT_MASK)
+    inp = bus.read_byte(LOCK_PICK_ADDRESS)
 
-def which_column(index):
-    if ((index == 0) or (index ==3)or(index ==6)):
-        GPIO.wait_for_edge(enable, GPIO.FALLING)
-        GPIO.output(onec,0)
-        GPIO.output(twoc,1)
-        GPIO.output(threec,1)
-    elif (index == 1 or 4 or 7):
-        GPIO.wait_for_edge(enable, GPIO.FALLING)
-        GPIO.output(onec,1)
-        GPIO.output(twoc,0)
-        GPIO.output(threec,1)
-    elif (index == 2 or 5 or 8):
-        GPIO.wait_for_edge(enable, GPIO.FALLING)
-        GPIO.output(onec,1)
-        GPIO.output(twoc,1)
-        GPIO.output(threec,0)
+    #return the value of the bit at position bit
+    return inp & (1 << bit)
 
+def send_digit(digit, bus):
 
+    row_bit, column_bit = DIGIT_MAP[digit]
+    #wait for line to go low
+    while get_line(bus, row_bit) == 1:
+        time.sleep(0.001)
 
-def next_red():
-    nonlocal redoff
-    redoff = True
-    return redoff
+    #shift by 4 and invert (as active low)
+    column_code = ~(column_bit<<4)
+    bus.write(LOCK_PICK_ADDRESS, column_code)
