@@ -168,7 +168,9 @@ def main(length):
                 gap += 1
             elif (gap < 16):
                 sleepytime(length)
+                gap = 0 # stops other presses being registered for a bit
             elif (key_board[index][pressed] == password[position]):
+                gap = 0 # stops other presses being registered for a bit
                 timeout = 0
                 position +=1
                 if (position >3):
@@ -178,6 +180,7 @@ def main(length):
                     ledset("green",False)
                     position = 0
             else:
+                gap = 0 # stops other presses being registered for a bit
                  #runs if the wrong number has been entered
                  ledset("red",True)
                  sleepytime(1000)
