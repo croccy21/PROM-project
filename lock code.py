@@ -173,6 +173,8 @@ def main(length):
                 gap = 0 # stops other presses being registered for a bit
                 timeout = 0
                 position +=1
+                print("{0}: {1} --> {2}".format(index, str(nine) + str(ten) +str(eleven), key_board[index][pressed] if pressed != 100 else "N"))
+            
                 if (position >3):
                 #runs if the whole password has been entered
                     ledset("green",True)
@@ -180,7 +182,7 @@ def main(length):
                     ledset("green",False)
                     position = 0
             else:
-                gap = 0 # stops other presses being registered for a bit
+                 gap = 0 # stops other presses being registered for a bit
                  #runs if the wrong number has been entered
                  ledset("red",True)
                  sleepytime(1000)
@@ -188,7 +190,6 @@ def main(length):
                  position = 0 #sends them back to the start
                  timeout = 0
 
-            print("{0}: {1} --> {2}".format(index, str(nine) + str(ten) +str(eleven), key_board[index][pressed] if pressed != 100 else "N"))
             if (index == 0):
                 eleven = 1
                 ten = 0
