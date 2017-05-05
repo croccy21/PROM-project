@@ -146,6 +146,7 @@ def main(length):
     key_board = [["1","2","3"],["4","5","6"],["7","8","9"],["*","0","#"]]
     password = read_password()
     wrong = False;
+    gap = 0 # used for software debouncing
     position = 0 #the point in the password the person is at
     #the main loop the repeatedly polls each line
     timeout = 0 # this counts up continously lighting up the onboard leds until all are lit then resets position
@@ -153,7 +154,9 @@ def main(length):
         nine = 0
         ten = 0
         eleven = 0
+        
         #this loop polls each of the rows in order
+        
         for index in range (4):
             pressed = poll_row(nine,ten,eleven,length)
             #this gets which column the person has pressed
@@ -161,6 +164,9 @@ def main(length):
             if(pressed!= 100):
                 sleepytime(length)
             if(pressed == 100):
+                sleepytime(length)
+                gap += 1
+            elif (gap < 16):
                 sleepytime(length)
             elif (key_board[index][pressed] == password[position]):
                 timeout = 0
