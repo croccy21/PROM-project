@@ -59,9 +59,9 @@ def ledset(colour, on_off):
             GPIO.output(11,0)
         else:
             GPIO.output(11,1)
-    time.sleep(10/1000)
+    sleepytime(10)
     GPIO.output(14,1)
-    time.sleep(10/1000)
+    sleepytime(10)
     GPIO.output(14,0)
 
 def timer(timeout,position):
@@ -112,14 +112,14 @@ def poll_row(nine,ten,eleven):
     GPIO.output(9,nine)
     GPIO.output(11,eleven)
     GPIO.output(10,ten)
-    time.sleep(10/100)
+    sleepytime(100)
     GPIO.output(14,1) # loading
-    time.sleep(10/100)
+    sleepytime(100)
     GPIO.output(14,0) # resetting the load
-    time.sleep(10/100)
+    sleepytime(100)
     change_to_inputs()
     GPIO.output(15,0)# Activating the enable from the tri-state
-    time.sleep(10/100)
+    sleepytime(100)
     #recognising which number has been entered
     if (GPIO.input(9) == 0):
         GPIO.output(15,1) # disabling tristate
@@ -136,7 +136,7 @@ def change_to_inputs():
     GPIO.setup(9,GPIO.IN,pull_up_down=GPIO.PUD_UP)
     GPIO.setup(10,GPIO.IN,pull_up_down=GPIO.PUD_UP)
     GPIO.setup(11,GPIO.IN,pull_up_down=GPIO.PUD_UP)
-
+    sleepytime(10)
 #red led (4/5)
 #Green Led 6/7
 
@@ -157,22 +157,22 @@ def main():
             #this gets which column the person has pressed
             #time.sleep(1)
             if(pressed!= 100):
-                time.sleep(10/100)
+                sleepytime(10/100)
             if(pressed == 100):
-                time.sleep(10/100)
+                sleepytime(10/100)
             elif (key_board[index][pressed] == password[position]):
                 timeout = 0
                 position +=1
                 if (position >3):
                 #runs if the whole password has been entered
                     ledset("green",True)
-                    time.sleep(3)
+                    sleepytime(3000)
                     ledset("green",False)
                     position = 0
             else:
                  #runs if the wrong number has been entered
                  ledset("red",True)
-                 time.sleep(1)
+                 sleepytime(1000)
                  ledset("red",False)
                  position = 0 #sends them back to the start
                  timeout = 0
