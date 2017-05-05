@@ -3,6 +3,8 @@ import RPi.GPIO as GPIO
 import time
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
+#The length of sleeps
+length = 500
 #Settting up the load and output-enable (only needs to be done once because always output
 GPIO.setup(14,GPIO.OUT) #load
 GPIO.setup(15,GPIO.OUT) #enable
@@ -98,7 +100,7 @@ def timer(timeout,position):
 
 
 #d type clocks on rising edge
-def poll_row(nine,ten,eleven):
+def poll_row(nine,ten,eleven,length):
     #This sets up the GPIO pins to outputs at the start of each cycle
     GPIO.setup(9,GPIO.OUT)
     GPIO.setup(10,GPIO.OUT)
@@ -112,14 +114,14 @@ def poll_row(nine,ten,eleven):
     GPIO.output(9,nine)
     GPIO.output(11,eleven)
     GPIO.output(10,ten)
-    sleepytime(1000)
+    sleepytime(length)
     GPIO.output(14,1) # loading
-    sleepytime(1000)
+    sleepytime(length)
     GPIO.output(14,0) # resetting the load
-    sleepytime(1000)
-    change_to_inputs()
+    sleepytime(length)
+    change_to_inputs(length)
     GPIO.output(15,0)# Activating the enable from the tri-state
-    sleepytime(1000)
+    sleepytime(length)
     #recognising which number has been entered
     if (GPIO.input(9) == 0):
         GPIO.output(15,1) # disabling tristate
@@ -132,15 +134,15 @@ def poll_row(nine,ten,eleven):
         return 0
     else:
         return 100
-def change_to_inputs():
+def change_to_inputs(length):
     GPIO.setup(9,GPIO.IN,pull_up_down=GPIO.PUD_UP)
     GPIO.setup(10,GPIO.IN,pull_up_down=GPIO.PUD_UP)
     GPIO.setup(11,GPIO.IN,pull_up_down=GPIO.PUD_UP)
-    sleepytime(100)
+    sleepytime(length)
 #red led (4/5)
 #Green Led 6/7
 
-def main():
+def main(length):
     key_board = [["1","2","3"],["4","5","6"],["7","8","9"],["*","0","#"]]
     password = read_password()
     wrong = False;
@@ -153,13 +155,13 @@ def main():
         eleven = 0
         #this loop polls each of the rows in order
         for index in range (4):
-            pressed = poll_row(nine,ten,eleven)
+            pressed = poll_row(nine,ten,eleven,length)
             #this gets which column the person has pressed
             #time.sleep(1)
             if(pressed!= 100):
-                sleepytime(100)
+                sleepytime(length)
             if(pressed == 100):
-                sleepytime(100)
+                sleepytime(length)
             elif (key_board[index][pressed] == password[position]):
                 timeout = 0
                 position +=1
@@ -202,6 +204,6 @@ def sleepytime(length): #assumes length is an int in ms
 
 
 try:
-    main()
+    main(length)
 except:
     GPIO.cleanup()
