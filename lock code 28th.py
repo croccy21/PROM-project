@@ -176,7 +176,6 @@ def main():
                  ledset("red",False)
                  position = 0 #sends them back to the start
                  timeout = 0
-
             print("{0}: {1} --> {2}".format(index, str(nine) + str(ten) +str(eleven), key_board[index][pressed] if pressed != 100 else "N"))
             if (index == 0):
                 eleven = 1
@@ -190,16 +189,6 @@ def main():
             #time.sleep(1)
         timeout += 30/1000
         position = timer(timeout,position)
-
-
-def sleepytime(length): #assumes length is an int in ms
-    wake = time.time()+length/1000
-    while wake > time.time():
-        time.sleep(length/10000)
-''' Optional stuff
-
-'''
-
 
 try:
     main()
