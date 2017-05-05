@@ -112,14 +112,14 @@ def poll_row(nine,ten,eleven):
     GPIO.output(9,nine)
     GPIO.output(11,eleven)
     GPIO.output(10,ten)
-    sleepytime(100)
+    sleepytime(1000)
     GPIO.output(14,1) # loading
-    sleepytime(100)
+    sleepytime(1000)
     GPIO.output(14,0) # resetting the load
-    sleepytime(100)
+    sleepytime(1000)
     change_to_inputs()
     GPIO.output(15,0)# Activating the enable from the tri-state
-    sleepytime(100)
+    sleepytime(1000)
     #recognising which number has been entered
     if (GPIO.input(9) == 0):
         GPIO.output(15,1) # disabling tristate
@@ -136,7 +136,7 @@ def change_to_inputs():
     GPIO.setup(9,GPIO.IN,pull_up_down=GPIO.PUD_UP)
     GPIO.setup(10,GPIO.IN,pull_up_down=GPIO.PUD_UP)
     GPIO.setup(11,GPIO.IN,pull_up_down=GPIO.PUD_UP)
-    sleepytime(10)
+    sleepytime(100)
 #red led (4/5)
 #Green Led 6/7
 
@@ -157,9 +157,9 @@ def main():
             #this gets which column the person has pressed
             #time.sleep(1)
             if(pressed!= 100):
-                sleepytime(10/100)
+                sleepytime(100)
             if(pressed == 100):
-                sleepytime(10/100)
+                sleepytime(100)
             elif (key_board[index][pressed] == password[position]):
                 timeout = 0
                 position +=1
