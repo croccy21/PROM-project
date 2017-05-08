@@ -66,27 +66,39 @@ def ledset(colour, on_off):
     sleepytime(10)
     GPIO.output(14,0)
 
+
+def buttonpressed():
+    GPIO.output(onboardgpio[0],0)
+    GPIO.output(onboardgpio[1],0)
+    GPIO.output(onboardgpio[2],0)
+    GPIO.output(onboardgpio[3],0)
+    GPIO.output(onboardgpio[4],0)
+    GPIO.output(onboardgpio[5],0)
+    GPIO.output(onboardgpio[6],0)
+    GPIO.output(onboardgpio[7],0)
+
 def timer(timeout,position):
     #needs better timing
     #wait= 1
     onboardgpio = [5,6,12,13,16,19,20,26]
-    if (timeout >= 0.375):
+    if (timeout >= 375):
         GPIO.output(onboardgpio[0],1)
-    elif (timeout >= 0.375*2):
+    if (timeout >= 375*2):
         GPIO.output(onboardgpio[1],1)
-    elif (timeout >= 0.375*3):
+    if (timeout >= 375*3):
         GPIO.output(onboardgpio[2],1)
-    elif (timeout >= 0.375*4):
+    if (timeout >= 375*4):
         GPIO.output(onboardgpio[3],1)
-    elif (timeout >= 0.375*5):
+    if (timeout >= 375*5):
         GPIO.output(onboardgpio[4],1)
-    elif (timeout >= 0.375*6):
+    if (timeout >= 375*6):
         GPIO.output(onboardgpio[5],1)
-    elif (timeout >= 0.375*7):
+    if (timeout >= 375*7):
         GPIO.output(onboardgpio[6],1)
-    elif (timeout >= 0.375*8):
+    if (timeout >= 375*8):
         GPIO.output(onboardgpio[7],1)
         position = 0
+	timeout = 0
         print("Time out")
         GPIO.output(onboardgpio[0],0)
         GPIO.output(onboardgpio[1],0)
@@ -96,7 +108,7 @@ def timer(timeout,position):
         GPIO.output(onboardgpio[5],0)
         GPIO.output(onboardgpio[6],0)
         GPIO.output(onboardgpio[7],0)
-    return position
+    return (position,timeout)
 
 
 #d type clocks on rising edge
@@ -172,6 +184,7 @@ def main(length):
             elif (key_board[index][pressed] == password[position]):
                 gap = 0 # stops other presses being registered for a bit
                 timeout = 0
+		buttonpressed()
                 position +=1
                 print("{0}: {1} --> {2}".format(index, str(nine) + str(ten) +str(eleven), key_board[index][pressed] if pressed != 100 else "N"))
             
@@ -181,6 +194,8 @@ def main(length):
                     sleepytime(3000)
                     ledset("green",False)
                     position = 0
+		    timeout = 0
+		    buttonpressed()
             else:
                  gap = 0 # stops other presses being registered for a bit
                  #runs if the wrong number has been entered
@@ -189,6 +204,7 @@ def main(length):
                  ledset("red",False)
                  position = 0 #sends them back to the start
                  timeout = 0
+		 buttonpressed()
 
             if (index == 0):
                 eleven = 1
@@ -200,8 +216,12 @@ def main(length):
                 eleven = 1
                 ten = 1
             #time.sleep(1)
-        timeout += 30/1000
-        position = timer(timeout,position)
+	    print(str(nine) + str(ten) + str(eleven) + (key_board[index][pressed] if pressed != 100 else "N"))
+        timeout += 10
+        values =timer(timeout,position)
+	position = values[0]
+	timeout = values[1]
+
 
 
 def sleepytime(length): #assumes length is an int in ms
