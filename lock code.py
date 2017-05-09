@@ -98,7 +98,7 @@ def timer(timeout,position):
     if (timeout >= 375*8):
         GPIO.output(onboardgpio[7],1)
         position = 0
-	timeout = 0
+        timeout = 0
         print("Time out")
         GPIO.output(onboardgpio[0],0)
         GPIO.output(onboardgpio[1],0)
@@ -166,9 +166,9 @@ def main(length):
         nine = 0
         ten = 0
         eleven = 0
-        
+
         #this loop polls each of the rows in order
-        
+
         for index in range (4):
             pressed = poll_row(nine,ten,eleven,length)
             #this gets which column the person has pressed
@@ -184,27 +184,27 @@ def main(length):
             elif (key_board[index][pressed] == password[position]):
                 gap = 0 # stops other presses being registered for a bit
                 timeout = 0
-		buttonpressed()
+                buttonpressed()
                 position +=1
                 print("{0}: {1} --> {2}".format(index, str(nine) + str(ten) +str(eleven), key_board[index][pressed] if pressed != 100 else "N"))
-            
+
                 if (position >3):
                 #runs if the whole password has been entered
                     ledset("green",True)
                     sleepytime(3000)
                     ledset("green",False)
                     position = 0
-		    timeout = 0
-		    buttonpressed()
+                    timeout = 0
+                    buttonpressed()
             else:
-                 gap = 0 # stops other presses being registered for a bit
-                 #runs if the wrong number has been entered
-                 ledset("red",True)
-                 sleepytime(1000)
-                 ledset("red",False)
-                 position = 0 #sends them back to the start
-                 timeout = 0
-		 buttonpressed()
+                gap = 0 # stops other presses being registered for a bit
+                #runs if the wrong number has been entered
+                ledset("red",True)
+                sleepytime(1000)
+                ledset("red",False)
+                position = 0 #sends them back to the start
+                timeout = 0
+                buttonpressed()
 
             if (index == 0):
                 eleven = 1
@@ -216,11 +216,11 @@ def main(length):
                 eleven = 1
                 ten = 1
             #time.sleep(1)
-	    print(str(nine) + str(ten) + str(eleven) + (key_board[index][pressed] if pressed != 100 else "N"))
-        timeout += 10
-        values =timer(timeout,position)
-	position = values[0]
-	timeout = values[1]
+            print(str(nine) + str(ten) + str(eleven) + (key_board[index][pressed] if pressed != 100 else "N"))
+            timeout += 10
+            values =timer(timeout,position)
+            position = values[0]
+            timeout = values[1]
 
 
 
