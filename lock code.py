@@ -190,6 +190,7 @@ def main(length):
 
                 if (position >3):
                 #runs if the whole password has been entered
+                    write_csv("Accepted")
                     ledset("green",True)
                     sleepytime(3000)
                     ledset("green",False)
@@ -199,6 +200,7 @@ def main(length):
             else:
                 gap = 0 # stops other presses being registered for a bit
                 #runs if the wrong number has been entered
+                write_csv("Denied")
                 ledset("red",True)
                 sleepytime(1000)
                 ledset("red",False)
@@ -233,7 +235,28 @@ def sleepytime(length): #assumes length is an int in ms
 '''
 
 
+def open_csv():
+    file = "AccessLog.csv"
+    
+	if not file.exists():
+		header = True
+        
+	csv = open(file,"a")
+    
+	if header:
+		csv.write("Time, Action" + os.linesep)
+        
+	csv.write(time.asctime(time.localtime)+",Start Lock"+ os.linesep)
+    csv.close()
+
+
+def write_csv(text):
+    csv = open("AccessLog.csv","a")
+    csv.write(time.asctime(time.localtime)+", "+text+ os.linesep)
+    csv.close()
+
 try:
     main(length)
 except:
+    write_csv("Stop Lock")
     GPIO.cleanup()
