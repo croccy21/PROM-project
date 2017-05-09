@@ -250,7 +250,7 @@ def open_csv():
     if header:
 	csv.write("Time, Action\n")
         
-    csv.write(time.asctime(time.localtime())+",Start Lock \n")
+    csv.write(time.asctime(time.localtime())+", Start Lock \n")
     csv.close()
 
 
