@@ -70,6 +70,7 @@ def ledset(colour, on_off):
 
 
 def buttonpressed():
+    onboardgpio = [5,6,12,13,16,19,20,26]
     GPIO.output(onboardgpio[0],0)
     GPIO.output(onboardgpio[1],0)
     GPIO.output(onboardgpio[2],0)
@@ -240,16 +241,16 @@ def sleepytime(length): #assumes length is an int in ms
 
 def open_csv():
     file = "AccessLog.csv"
-    
+
     header = False
     if not os.path.exists(file):
 	header = True
-        
+
     csv = open(file,"a")
-    
+
     if header:
 	csv.write("Time, Action\n")
-        
+
     csv.write(time.asctime(time.localtime())+", Start Lock \n")
     csv.close()
 
