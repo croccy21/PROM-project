@@ -1,6 +1,8 @@
 #Key lock system
 import RPi.GPIO as GPIO
 import time
+import os
+
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 #The length of sleeps
@@ -157,6 +159,7 @@ def change_to_inputs(length):
 def main(length):
     key_board = [["1","2","3"],["4","5","6"],["7","8","9"],["*","0","#"]]
     password = read_password()
+    open_csv()
     wrong = False;
     gap = 0 # used for software debouncing
     position = 0 #the point in the password the person is at
@@ -238,21 +241,22 @@ def sleepytime(length): #assumes length is an int in ms
 def open_csv():
     file = "AccessLog.csv"
     
+    header = False
     if not file.exists():
 	header = True
         
     csv = open(file,"a")
     
     if header:
-	csv.write("Time, Action" + os.linesep)
+	csv.write("Time, Action\n")
         
-    csv.write(time.asctime(time.localtime)+",Start Lock"+ os.linesep)
+    csv.write(time.asctime(time.localtime())+",Start Lock \n")
     csv.close()
 
 
 def write_csv(text):
     csv = open("AccessLog.csv","a")
-    csv.write(time.asctime(time.localtime)+", "+text+ os.linesep)
+    csv.write(time.asctime(time.localtime())+", "+text+ "\n")
     csv.close()
 
 try:
