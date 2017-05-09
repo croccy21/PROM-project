@@ -242,7 +242,7 @@ def open_csv():
     file = "AccessLog.csv"
     
     header = False
-    if not fos.path.exists(file):
+    if not os.path.exists(file):
 	header = True
         
     csv = open(file,"a")
