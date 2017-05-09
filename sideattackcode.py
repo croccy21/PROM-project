@@ -37,7 +37,7 @@ def find_code(bus):
     code = []
 
     for i in range(4):
-        found = False:
+        found = False
         digit_indix = 0
         while not found and digit_indix<len(DIGITS):
             #send code so far
