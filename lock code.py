@@ -238,15 +238,15 @@ def sleepytime(length): #assumes length is an int in ms
 def open_csv():
     file = "AccessLog.csv"
     
-	if not file.exists():
-		header = True
+    if not file.exists():
+	header = True
         
-	csv = open(file,"a")
+    csv = open(file,"a")
     
-	if header:
-		csv.write("Time, Action" + os.linesep)
+    if header:
+	csv.write("Time, Action" + os.linesep)
         
-	csv.write(time.asctime(time.localtime)+",Start Lock"+ os.linesep)
+    csv.write(time.asctime(time.localtime)+",Start Lock"+ os.linesep)
     csv.close()
 
 
