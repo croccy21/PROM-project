@@ -23,7 +23,7 @@ BUS_ADDRESS = 1
 LOCK_PICK_ADDRESS = 0b0111000
 INPUT_MASK = 0x8f
 
-DEBUG_LEVEL = 1
+DEBUG_LEVEL = 3
 
 DIGITS = ["1","2","3","4","5","6","7","8","9","*","0","#"]
 # "digit": (row bit, column bit)
@@ -38,7 +38,8 @@ def debug(level, arg):
 
 def main():
     bus = smbus.SMBus(BUS_ADDRESS)
-    find_code(bus)
+    print(find_code(bus))
+    
 
 def find_code(bus):
     code = []
@@ -75,27 +76,30 @@ def write(bus, byte, mask=0xff, current_byte = 0x00):
 
 def read(bus, mask=0xff):
     byte = bus.read_byte(LOCK_PICK_ADDRESS)
+    debug(3, bin(byte))
     return byte & mask
 
-def get_next_line(bus, current_byte = 0x00, invert=True):
+def get_next_line(bus, current_byte = 0x00, active_low=True):
     # Set the lines to read high
     write(bus, INPUT_MASK, INPUT_MASK, current_byte)
     time.sleep(0.001)
-    byte_read = 0x00
+    byte_read = 0xff if active_low else 0x00 
     debug(2, 'waiting for line')
-    #the == operator is being used as an xnor in this while loop
     #I'm sorry
-    while bool(byte_read) == invert:
+    while not bool(byte_read ^ (0xff if active_low else 0x00)):
         byte_read = read(bus, INPUT_MASK)
         time.sleep(0.001)
+    debug(2, 'byte ' + bin(byte_read))
     for bit in range(7, -1, -1):
-        if bool(byte_read & (1 << bit)) != invert:
-            debug(2, 'found ' + str(bit))
-            return bit
+        bit_mask = 1 << bit
+        if bool(INPUT_MASK & bit_mask):
+            if bool(byte_read & bit_mask) != active_low:
+                debug(2, 'found ' + str(bit))
+                return bit
     raise ValueError('no valid bit found after read')
 
-def wait_for_line(bus, bit, current_byte = 0x00, invert=True):
-    while get_next_line(bus, current_byte, invert) != bit:
+def wait_for_line(bus, bit, current_byte = 0x00, active_low=True):
+    while get_next_line(bus, current_byte, active_low) != bit:
         time.sleep(0.001)
 
 def send_digit(digit, bus):
@@ -107,7 +111,7 @@ def send_digit(digit, bus):
     #shift by 4 and invert (as active low)
     column_code = ~(column_bit<<4)
     debug(2, 'sending ' + str(column_code))
-    write(LOCK_PICK_ADDRESS, column_code)
+    write(bus, column_code)
 
 if __name__ == "__main__":
     main()
