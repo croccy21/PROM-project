@@ -23,7 +23,7 @@ BUS_ADDRESS = 1
 LOCK_PICK_ADDRESS = 0b0111000
 INPUT_MASK = 0x8f
 
-DEBUG_LEVEL = 3
+DEBUG_LEVEL = 2
 
 DIGITS = ["1","2","3","4","5","6","7","8","9","*","0","#"]
 # "digit": (row bit, column bit)
@@ -34,12 +34,12 @@ DIGIT_MAP = {"1":(0,0),"2":(0,1),"3":(0,2),
 
 def debug(level, arg):
     if level<=DEBUG_LEVEL:
-        print(str(level) + ") " + str(arg))
+        print('/t'*level+str(level) + ") " + str(arg))
 
 def main():
     bus = smbus.SMBus(BUS_ADDRESS)
     print(find_code(bus))
-    
+
 
 def find_code(bus):
     code = []
@@ -49,13 +49,13 @@ def find_code(bus):
         digit_index = 0
         while not found and digit_index<len(DIGITS):
             #send code so far
-            debug(1, 'sending existing code:' + str(code))
+            debug(1, 'sending existing code: ' + str(code))
             for digit in code:
                 send_digit(digit, bus)
 
             #test next digit
             digit = DIGITS[digit_index]
-            debug(1, 'testing digit' + str(digit))
+            debug(1, 'testing digit: ' + str(digit))
             send_digit(digit, bus)
 
             resp = get_next_line(bus)
@@ -83,7 +83,7 @@ def get_next_line(bus, current_byte = 0x00, active_low=True):
     # Set the lines to read high
     write(bus, INPUT_MASK, INPUT_MASK, current_byte)
     time.sleep(0.001)
-    byte_read = 0xff if active_low else 0x00 
+    byte_read = 0xff if active_low else 0x00
     debug(2, 'waiting for line')
     #I'm sorry
     while not bool(byte_read ^ (0xff if active_low else 0x00)):
@@ -109,8 +109,8 @@ def send_digit(digit, bus):
     wait_for_line(bus, row_bit)
 
     #shift by 4 and invert (as active low)
-    column_code = ~(column_bit<<4)
-    debug(2, 'sending ' + str(column_code))
+    column_code = 0xff & ~(column_bit<<4)
+    debug(2, 'sending ' + bin(column_code))
     write(bus, column_code)
 
 if __name__ == "__main__":
