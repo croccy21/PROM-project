@@ -272,8 +272,10 @@ def write_csv(text):
 	
     if "ac" in text:
 	num = 2
-    else:
+    elif "de" in text:
 	num = 1
+    else:
+	num = 0
 	
     dat = open("data.dat","a")
     t = time.ctime().split(' ')[3].split(":")
