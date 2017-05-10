@@ -259,7 +259,7 @@ def open_csv():
 
     t = time.ctime().split(' ')[3].split(":")
     t = t[0]+t[1]+t[2]
-    dat.write(t+" 0")
+    dat.write(t+" 0\n")
 	
     dat.close()
     csv.close()
@@ -278,7 +278,7 @@ def write_csv(text):
     dat = open("data.dat","a")
     t = time.ctime().split(' ')[3].split(":")
     t = t[0]+t[1]+t[2]
-    dat.write(t+" "+str(num))    
+    dat.write(t+" "+str(num)+"\n")    
     dat.close()
 
 
