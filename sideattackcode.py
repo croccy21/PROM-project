@@ -32,7 +32,7 @@ DIGIT_MAP = {"1":(0,0),"2":(0,1),"3":(0,2),
              "7":(2,0),"8":(2,1),"9":(2,2),
              "*":(3,0),"0":(3,1),"#":(3,2)}
 
-debug(level, arg):
+def debug(level, arg):
     if level<=DEBUG_LEVEL:
         print(str(level) + ") " + str(arg))
 
