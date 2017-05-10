@@ -1,6 +1,6 @@
-import GnuPlot
+import os
 
-def graph():
+def graphold():
 	file = open("AccessLog","r")
 	data = [] 
 	x = []
@@ -37,3 +37,15 @@ def graph():
 	g.hardcopy(filename="AccessGraph.jpg",terminal="jpg")
 	del g
 	
+def graph():
+	os.system("gnuplot")
+	os.system('set title "Access Times Graph"') 
+	os.system("set xtic auto")
+	os.system("set ytic auto")
+	os.system('set xlabel "time (hhmmss)"')
+	os.system('set ylabel "0 = inactive , 1 = failed , 2 = sucess"')
+	os.system("plot data.dat")
+	os.system("set term jpg")
+	os.system('set output "AccessGraph.jpg"')
+	os.system("replot")
+	os.system("exit")
