@@ -182,9 +182,9 @@ def main(length):
             if(pressed == 100):
                 sleepytime(length)
                 gap += 1
-            elif (gap < 16):
-                sleepytime(length)
-                gap = 0 # stops other presses being registered for a bit
+            #elif (gap < 16):
+            #    sleepytime(length)
+            #    gap = 0 # stops other presses being registered for a bit
             elif (key_board[index][pressed] == password[position]):
                 gap = 0 # stops other presses being registered for a bit
                 timeout = 0
@@ -222,7 +222,7 @@ def main(length):
                 eleven = 1
                 ten = 1
             #time.sleep(1)
-            print(str(nine) + str(ten) + str(eleven) + (key_board[index][pressed] if pressed != 100 else "N"))
+            print("This is at the loop end" + str(nine) + str(ten) + str(eleven) + (key_board[index][pressed] if pressed != 100 else "N"))
             timeout += 10
             values =timer(timeout,position)
             position = values[0]
