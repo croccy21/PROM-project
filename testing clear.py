@@ -1,5 +1,5 @@
 import os
 
 print("Hello")
-os.system('cls||clear')
+os.system('clear')
 input()
