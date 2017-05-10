@@ -23,12 +23,18 @@ BUS_ADDRESS = 1
 LOCK_PICK_ADDRESS = 0b0111000
 INPUT_MASK = 0x8f
 
+DEBUG_LEVEL = 1
+
 DIGITS = ["1","2","3","4","5","6","7","8","9","*","0","#"]
 # "digit": (row bit, column bit)
 DIGIT_MAP = {"1":(0,0),"2":(0,1),"3":(0,2),
              "4":(1,0),"5":(1,1),"6":(1,2),
              "7":(2,0),"8":(2,1),"9":(2,2),
              "*":(3,0),"0":(3,1),"#":(3,2)}
+
+debug(level, arg):
+    if level<=DEBUG_LEVEL:
+        print(str(level) + ") " + str(arg))
 
 def main():
     bus = smbus.SMBus(BUS_ADDRESS)
@@ -42,45 +48,66 @@ def find_code(bus):
         digit_index = 0
         while not found and digit_index<len(DIGITS):
             #send code so far
-            print('sending existing code:' + str(code))
+            debug(1, 'sending existing code:' + str(code))
             for digit in code:
                 send_digit(digit, bus)
 
             #test next digit
             digit = DIGITS[digit_index]
-            print('testing digit' + str(digit))
+            debug(1, 'testing digit' + str(digit))
             send_digit(digit, bus)
 
-            resp = get_line(bus, 7)
+            resp = get_next_line(bus)
 
-            if resp:
-                print('got it')
+            if resp==7:
+                debug(1, 'got it')
                 code.append(digit)
                 found = True
             else:
-                print('try agian')
+                debug(1, 'try agian')
                 digit_index += 1
     return code
 
-def get_line(bus, bit):
-    bus.write_byte(LOCK_PICK_ADDRESS, INPUT_MASK)
-    time.sleep(0.1)
-    inp = bus.read_byte(LOCK_PICK_ADDRESS)
-    time.sleep(0.1)
+def write(bus, byte, mask=0xff, current_byte = 0x00):
+    byte = (byte & mask) | (current_byte & ~mask)
+    bus.write_byte(LOCK_PICK_ADDRESS, byte)
+    return byte
 
-    #return the value of the bit at position bit
-    return inp & (1 << bit)
+def read(bus, mask=0xff):
+    byte = bus.read_byte(LOCK_PICK_ADDRESS)
+    return byte & mask
+
+def get_next_line(bus, current_byte = 0x00, invert=True):
+    # Set the lines to read high
+    write(bus, INPUT_MASK, INPUT_MASK, current_byte)
+    time.sleep(0.001)
+    byte_read = 0x00
+    debug(2, 'waiting for line')
+    #the == operator is being used as an xnor in this while loop
+    #I'm sorry
+    while bool(byte_read) == invert:
+        byte_read = read(bus, INPUT_MASK)
+        time.sleep(0.001)
+    for bit in range(7, -1, -1):
+        if bool(byte_read & (1 << bit)) != invert:
+            debug(2, 'found ' + str(bit))
+            return bit
+    raise ValueError('no valid bit found after read')
+
+def wait_for_line(bus, bit, current_byte = 0x00, invert=True):
+    while get_next_line(bus, current_byte, invert) != bit:
+        time.sleep(0.001)
 
 def send_digit(digit, bus):
     row_bit, column_bit = DIGIT_MAP[digit]
     #wait for line to go low
-    while get_line(bus, row_bit) == 1:
-        time.sleep(0.001)
+    debug(2, 'waiting for line: ' + str(row_bit))
+    wait_for_line(bus, row_bit)
 
     #shift by 4 and invert (as active low)
     column_code = ~(column_bit<<4)
-    bus.write_byte(LOCK_PICK_ADDRESS, column_code)
-    time.sleep(0.1)
+    debug(2, 'sending ' + str(column_code))
+    write(LOCK_PICK_ADDRESS, column_code)
 
 if __name__ == "__main__":
     main()
