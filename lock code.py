@@ -242,17 +242,26 @@ def sleepytime(length): #assumes length is an int in ms
 
 def open_csv():
     file = "AccessLog.csv"
-
+    f = "data.dat"
+	
     header = False
+
     if not os.path.exists(file):
 	header = True
 
     csv = open(file,"a")
+    dat = open(f,"a")
 
     if header:
 	csv.write("Time, Action\n")
 
     csv.write(time.asctime(time.localtime())+", Start Lock \n")
+
+    t = time.ctime().split(' ')[3].split(":")
+    t = t[0]+t[1]+t[2]
+    dat.write(t+" 0")
+	
+    dat.close()
     csv.close()
 
 
@@ -260,6 +269,18 @@ def write_csv(text):
     csv = open("AccessLog.csv","a")
     csv.write(time.asctime(time.localtime())+", "+text+ "\n")
     csv.close()
+	
+    if "ac" in text:
+	num = 2
+    else:
+	num = 1
+	
+    t = time.ctime().split(' ')[3].split(":")
+    t = t[0]+t[1]+t[2]
+    dat.write(t+" "+str(num))    
+    dat.close()
+
+def
 
 try:
     main(length)
