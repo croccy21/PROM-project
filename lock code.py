@@ -233,10 +233,10 @@ def main(length, seconds, side_attack, tryanddelay):
                 print("{0}: {1} --> {2}".format(index, str(nine) + str(ten) +str(eleven), key_board[index][pressed] if pressed != 100 else "N"))
                 #This is the code for the digit display, currently looks wrong because of debugging print
                 os.system('clear')
-                 for  i in range (position-1):
+                for  i in range (position-1):
                     print("*", end="")
-                    print(key_board[index][pressed])
-                    key_pressed_time = time.time()+1
+                print(key_board[index][pressed])
+                key_pressed_time = time.time()+1
                 if (position >3):
                     #This is the code for the digit display
                     os.system('clear')
@@ -292,7 +292,6 @@ def main(length, seconds, side_attack, tryanddelay):
                             os.system('clear')
                             print("LOCKED " + str(numseconds))
                             sleepytime(1000)
-                    
                     
             if (index == 0):
                 eleven = 1
