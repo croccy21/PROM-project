@@ -2,7 +2,6 @@
 import RPi.GPIO as GPIO
 import time
 import os
-import graph
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -289,5 +288,5 @@ try:
     main(length)
 except:
     write_csv("Stop Lock")
-    graph.graph()
+    os.system('gnuplot "graph.p"')
     GPIO.cleanup()
