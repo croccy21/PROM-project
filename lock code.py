@@ -183,7 +183,6 @@ def main(length):
                 sleepytime(length)
                 gap += 1
             elif (gap < 16):
-                sleepytime(length)
                 gap = 0 # stops other presses being registered for a bit
             elif (key_board[index][pressed] == password[position]):
                 gap = 0 # stops other presses being registered for a bit
