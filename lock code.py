@@ -204,6 +204,7 @@ def main(length):
                 gap = 0 # stops other presses being registered for a bit
                 #runs if the wrong number has been entered
                 write_csv("Denied")
+		print("{0}: {1} --> {2}".format(index, str(nine) + str(ten) +str(eleven), key_board[index][pressed] if pressed != 100 else "N"))
                 ledset("red",True)
                 sleepytime(1000)
                 ledset("red",False)
