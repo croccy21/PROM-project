@@ -3,6 +3,33 @@ import RPi.GPIO as GPIO
 import time
 import os
 
+
+side_attack = True
+#This is the setup fo the Maximum Try Lockout
+#number of trys first, then delay
+#if number of trys  = 0 then won't run
+tryanddelay[0] = 4
+tryanddelay[1] = 60
+
+#Time lockout (was told it had to take the start and end tiems and assume these were from boot up)
+#Passed in as an array of hours, and then time past hour in minutes
+#Will return ValueError if minutes >59 or hours > 24
+
+timestart[9,59]
+timeend[17,00]
+if (timestart[1] or timeend[1]) > 59:
+    return ValueError("Please enter an amount of minutes less than 60")
+elif (timestart[0] or timeend[0]) > 24:
+    return ValueError("Please use 24hour clock times")
+
+opentime =[,]
+opentime[0] =abs( timeend[0] - timestart[1])
+if timeend[1] < timestart[1]:
+    opentime[0]-=1
+    opentime[1] = 60- (timeend[1] - timestart[1])
+else:
+    opentime[1] = timeend[1] - timestart[1]
+
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 #The length of sleeps
@@ -45,7 +72,7 @@ def read_password():
     return code
 
 def ledset(colour, on_off):
-    #Sets and turns off the led, needs a string of which colour and a bool of on or off
+    #Sets and turns off the led, needs a string of which colour and a bool (True = on, False = off)
     GPIO.setup(9,GPIO.OUT)
     GPIO.setup(10,GPIO.OUT)
     GPIO.setup(11,GPIO.OUT)
@@ -157,7 +184,7 @@ def change_to_inputs(length):
 #red led (4/5)
 #Green Led 6/7
 
-def main(length):
+def main(length, seconds, side_attack, tryanddelay):
     key_board = [["1","2","3"],["4","5","6"],["7","8","9"],["*","0","#"]]
     password = read_password()
     open_csv()
@@ -165,8 +192,21 @@ def main(length):
     gap = 0 # used for software debouncing
     position = 0 #the point in the password the person is at
     #the main loop the repeatedly polls each line
+    numtrys = 0
     timeout = 0 # this counts up continously lighting up the onboard leds until all are lit then resets position
     while wrong ==False:
+        if (time.time() > seconds) and (seconds != 0):
+            GPIO.output(onboardgpio[0],1)
+            GPIO.output(onboardgpio[1],1)
+            GPIO.output(onboardgpio[2],1)
+            GPIO.output(onboardgpio[3],1)
+            GPIO.output(onboardgpio[4],1)
+            GPIO.output(onboardgpio[5],1)
+            GPIO.output(onboardgpio[6],1)
+            GPIO.output(onboardgpio[7],1)
+            ledset("red",True)
+            sleepytime(10000)
+            return ("Outside of open times")
         nine = 0
         ten = 0
         eleven = 0
@@ -184,16 +224,24 @@ def main(length):
                 gap += 1
             elif (gap < 16):
                 gap = 0 # stops other presses being registered for a bit
-		sleepytime(length)
             elif (key_board[index][pressed] == password[position]):
                 gap = 0 # stops other presses being registered for a bit
                 timeout = 0
+                incorrect = 0
                 buttonpressed()
                 position +=1
                 print("{0}: {1} --> {2}".format(index, str(nine) + str(ten) +str(eleven), key_board[index][pressed] if pressed != 100 else "N"))
-
+                #This is the code for the digit display, currently looks wrong because of debugging print
+                os.system('clear')
+                 for  i in range (position-1):
+                    print("*", end="")
+                    print(key_board[index][pressed])
+                    key_pressed_time = time.time()+1
                 if (position >3):
-                #runs if the whole password has been entered
+                    #This is the code for the digit display
+                    os.system('clear')
+                    print("****",end = "")
+                    #runs if the whole password has been entered
                     write_csv("Accepted")
                     ledset("green",True)
                     sleepytime(3000)
@@ -201,18 +249,51 @@ def main(length):
                     position = 0
                     timeout = 0
                     buttonpressed()
+                    os.system('clear')
             else:
-                gap = 0 # stops other presses being registered for a bit
-                #runs if the wrong number has been entered
-                write_csv("Denied")
-		print("{0}: {1} --> {2}".format(index, str(nine) + str(ten) +str(eleven), key_board[index][pressed] if pressed != 100 else "N"))
-                ledset("red",True)
-                sleepytime(1000)
-                ledset("red",False)
-                position = 0 #sends them back to the start
-                timeout = 0
-                buttonpressed()
-
+                #This is the code for the digit display:
+                os.system('clear')
+                for  i in range (position):
+                    print("*", end="")
+                print(key_board[index][pressed])
+                key_pressed_time = time.time()+1
+                #Enables or disables side attacks based on the side_attack constant
+                if side_attack == True:
+                    gap = 0 # stops other presses being registered for a bit
+                    #runs if the wrong number has been entered
+                    write_csv("Denied")
+                    ledset("red",True)
+                    sleepytime(1000)
+                    ledset("red",False)
+                    position = 0 #sends them back to the start
+                    timeout = 0
+                    buttonpressed()
+                else:
+                    gap = 0 # stops other presses being registered for a bit
+                    #runs if the wrong number has been entered
+                    write_csv("Denied")
+                    incorrect+= 1
+                    timeout = 0
+                    buttonpressed()
+                    if incorrect > 3:
+                        incorrect = 0
+                        position = 0 # only sends them back to the start on their third incorrect press                        
+                        ledset("red",True)
+                        sleepytime(1000)
+                        ledset("red",False)
+                #This clears the digit output
+                os.system('clear')
+                #This is the maximum try lockout
+                if (tryanddelay[0]!= 0):
+                    numtrys += 1
+                    if (numtrys >= tryanddelay[0]):
+                        numsecondslef = tryanddelay[1]
+                        for index in range(tryanddelay[1]):
+                            os.system('clear')
+                            print("LOCKED " + str(numseconds))
+                            sleepytime(1000)
+                    
+                    
             if (index == 0):
                 eleven = 1
                 ten = 0
@@ -223,11 +304,15 @@ def main(length):
                 eleven = 1
                 ten = 1
             #time.sleep(1)
+            print(str(nine) + str(ten) + str(eleven) + (key_board[index][pressed] if pressed != 100 else "N"))
             timeout += 10
             values =timer(timeout,position)
             position = values[0]
             timeout = values[1]
-
+            if key_pressed_time <= time.time():
+                os.system('clear')
+                for  i in range (position):
+                    print("*", end="")
 
 
 def sleepytime(length): #assumes length is an int in ms
@@ -241,26 +326,17 @@ def sleepytime(length): #assumes length is an int in ms
 
 def open_csv():
     file = "AccessLog.csv"
-    f = "data.dat"
-	
-    header = False
 
+    header = False
     if not os.path.exists(file):
 	header = True
 
     csv = open(file,"a")
-    dat = open(f,"a")
 
     if header:
 	csv.write("Time, Action\n")
 
     csv.write(time.asctime(time.localtime())+", Start Lock \n")
-
-    t = time.ctime().split(' ')[3].split(":")
-    t = t[0]+t[1]+t[2]
-    dat.write(t+" 0\n")
-	
-    dat.close()
     csv.close()
 
 
@@ -268,25 +344,31 @@ def write_csv(text):
     csv = open("AccessLog.csv","a")
     csv.write(time.asctime(time.localtime())+", "+text+ "\n")
     csv.close()
-	
-    if "ac" in text:
-	num = 2
-    elif "de" in text:
-	num = 1
-    else:
-	num = 0
-	
-    dat = open("data.dat","a")
-    t = time.ctime().split(' ')[3].split(":")
-    t = t[0]+t[1]+t[2]
-    dat.write(t+" "+str(num)+"\n")    
-    dat.close()
 
-
-
-try:
-    main(length)
-except:
-    write_csv("Stop Lock")
-    os.system('gnuplot "graph.p"')
+#This runs the main loop. If it is outside of access times then it will turn on the red led and timeout leds and stop
+if (opentime[0] and opentime[1])==0   
+    try:
+        main(length, 0, side_attack,tryanddelay)
+    except:
+        write_csv("Stop Lock")
     GPIO.cleanup()
+else:
+    seconds = 60*60*opentime[0]
+    seconds += 60*opentime[1]
+    if (time.time() < seconds):
+        try:
+            main(length,seconds, side_attack,tryanddelay)
+        except:
+            write_csv("Stop Lock")
+        GPIO.cleanup()
+    else:
+        GPIO.output(onboardgpio[0],1)
+        GPIO.output(onboardgpio[1],1)
+        GPIO.output(onboardgpio[2],1)
+        GPIO.output(onboardgpio[3],1)
+        GPIO.output(onboardgpio[4],1)
+        GPIO.output(onboardgpio[5],1)
+        GPIO.output(onboardgpio[6],1)
+        GPIO.output(onboardgpio[7],1)
+        ledset("red",True)
+        sleepytime(10000)
