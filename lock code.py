@@ -326,17 +326,26 @@ def sleepytime(length): #assumes length is an int in ms
 
 def open_csv():
     file = "AccessLog.csv"
-
+    f = "data.dat"
+	
     header = False
+
     if not os.path.exists(file):
 	header = True
 
     csv = open(file,"a")
+    dat = open(f,"a")
 
     if header:
 	csv.write("Time, Action\n")
 
     csv.write(time.asctime(time.localtime())+", Start Lock \n")
+
+    t = time.ctime().split(' ')[3].split(":")
+    t = t[0]+t[1]+t[2]
+    dat.write(t+" 0\n")
+	
+    dat.close()
     csv.close()
 
 
@@ -344,6 +353,19 @@ def write_csv(text):
     csv = open("AccessLog.csv","a")
     csv.write(time.asctime(time.localtime())+", "+text+ "\n")
     csv.close()
+	
+    if "ac" in text:
+	num = 2
+    elif "de" in text:
+	num = 1
+    else:
+	num = 0
+	
+    dat = open("data.dat","a")
+    t = time.ctime().split(' ')[3].split(":")
+    t = t[0]+t[1]+t[2]
+    dat.write(t+" "+str(num)+"\n")    
+    dat.close()
 
 #This runs the main loop. If it is outside of access times then it will turn on the red led and timeout leds and stop
 if (opentime[0] and opentime[1])==0   
@@ -351,6 +373,7 @@ if (opentime[0] and opentime[1])==0
         main(length, 0, side_attack,tryanddelay)
     except:
         write_csv("Stop Lock")
+	os.system('gnuplot "graph.p"')
     GPIO.cleanup()
 else:
     seconds = 60*60*opentime[0]
@@ -360,6 +383,7 @@ else:
             main(length,seconds, side_attack,tryanddelay)
         except:
             write_csv("Stop Lock")
+	    os.system('gnuplot "graph.p"')
         GPIO.cleanup()
     else:
         GPIO.output(onboardgpio[0],1)
