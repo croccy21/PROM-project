@@ -275,12 +275,13 @@ def write_csv(text):
     else:
 	num = 1
 	
+    dat = open("data.dat","a")
     t = time.ctime().split(' ')[3].split(":")
     t = t[0]+t[1]+t[2]
     dat.write(t+" "+str(num))    
     dat.close()
 
-def
+
 
 try:
     main(length)
