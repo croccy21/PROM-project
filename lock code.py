@@ -2,6 +2,7 @@
 import RPi.GPIO as GPIO
 import time
 import os
+import graph
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -223,7 +224,6 @@ def main(length):
                 eleven = 1
                 ten = 1
             #time.sleep(1)
-            print("{0}: {1} --> {2}".format(index, str(nine) + str(ten) +str(eleven), key_board[index][pressed] if pressed != 100 else "N"))
             timeout += 10
             values =timer(timeout,position)
             position = values[0]
@@ -265,4 +265,5 @@ try:
     main(length)
 except:
     write_csv("Stop Lock")
+    graph.graph()
     GPIO.cleanup()
