@@ -161,5 +161,47 @@ def test2():
     send_digit('3', bus)
     send_digit('4', bus)
 
+#Optional extra:
+
+def improved_brute(bus):
+    #this is the optional extra improved brute force, it saves the passwords in possiblecodes.txt
+    #It uses common possiblities such as 1234, presidents birthdays, birthdays, and previous codes.
+    #If the file is missing or once its ran through them all it just executes the main brute force
+    possible_values = ["0","1","2","3","4","5","6","7","8","9","*","#"]
+    column1 =0
+    column2 = 0
+    column3 = 0
+    column4 = 0
+    possible_codes = []
+    try:
+        possible_file = open("possiblecodes.txt","r")
+        possible_codes.append(possible_file.readline())
+        possible_file.close()
+    except:
+        possible_codes = ["1234"]
+    for x in range (len(possible_codes)):
+        for index in range(len(possible_codes[x])):
+            send_digit(possible_codes[x][index], bus)
+            time.sleep(1)
+    #if that fails this runs through the main brute force
+    while column1 <= 12:
+        while column2 <= 12:
+            while column3 <= 12:
+                while column4 <= 12:
+                    send_digit(possible_values[column4], bus)
+                    time.sleep(1)
+                    send_digit(possible_values[column3], bus)
+                    time.sleep(1)
+                    send_digit(possible_values[column2], bus)
+                    time.sleep(1)
+                    send_digit(possible_values[column1], bus)
+                    time.sleep(1)
+                    column4 +=1
+                column3 +=1
+                column4 = 0
+            column2 +=1
+            column3 = 0
+        column1+=1
+        column2 = 0
 if __name__ == "__main__":
     main()
