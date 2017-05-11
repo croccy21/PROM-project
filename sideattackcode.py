@@ -50,11 +50,6 @@ def find_code(bus):
         found = False
         digit_index = 0
         while not found and digit_index<len(DIGITS):
-            #send code so far
-            debug(1, 'sending existing code: ' + str(code))
-            for digit in code:
-                send_digit(digit, bus)
-
             #test next digit
             digit = DIGITS[digit_index]
             debug(1, 'testing digit '+ str(digit))
@@ -68,6 +63,10 @@ def find_code(bus):
             else:
                 debug(1, 'try agian')
                 digit_index += 1
+                #send code so far
+                debug(1, 'sending existing code: ' + str(code))
+                for digit in code:
+                    send_digit(digit, bus)
     return code
 
 
@@ -104,7 +103,7 @@ def get_next_line(bus, current_byte = 0x00, active_low=True):
         bit_mask = 1 << bit
         if bool(INPUT_MASK & bit_mask):
             if bool(byte_read & bit_mask):
-                debug(2, 'found ' + str(bit))
+                debug(3, 'found ' + str(bit))
                 return bit
 
     raise ValueError('no valid bit found after read')
@@ -112,8 +111,13 @@ def get_next_line(bus, current_byte = 0x00, active_low=True):
 
 def wait_for_line(bus, bit, current_byte = 0x00, active_low=True):
     while get_next_line(bus, current_byte, active_low) != bit:
-        time.sleep(0.0001)
-
+        #time.sleep(0.0001)
+        pass
+    time.sleep(0.1)
+    while get_next_line(bus, current_byte, active_low) != bit:
+        #time.sleep(0.0001)
+        pass
+    debug(2, 'finally found ' + str(bit))
 
 def send_digit(digit, bus):
     row_bit, column_bit = DIGIT_MAP[digit]
@@ -128,6 +132,7 @@ def send_digit(digit, bus):
 
     time.sleep(.2)
     debug(2, 'wait for response')
+    time.sleep(.5)
     return get_next_line(bus)
 
 def test1():
@@ -151,9 +156,10 @@ def test1():
 
 def test2():
     bus = smbus.SMBus(BUS_ADDRESS)
-    for i in range(20):
-        send_digit('2', bus)
-        time.sleep(1)
+    send_digit('1', bus)
+    send_digit('2', bus)
+    send_digit('3', bus)
+    send_digit('4', bus)
 
 if __name__ == "__main__":
-    test2()
+    main()
