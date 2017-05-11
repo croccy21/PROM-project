@@ -9,8 +9,8 @@ side_attack = True
 #number of trys first, then delay
 #if number of trys  = 0 then won't run
 tryanddelay=[]
-tryanddelay[0] = 4
-tryanddelay[1] = 60
+tryanddelay.append(4)
+tryanddelay.append(60)
 
 #Time lockout (was told it had to take the start and end tiems and assume these were from boot up)
 #Passed in as an array of hours, and then time past hour in minutes
