@@ -18,11 +18,11 @@ tryanddelay[1] = 60
 timestart[9,59]
 timeend[17,00]
 if (timestart[1] or timeend[1]) > 59:
-    return ValueError("Please enter an amount of minutes less than 60")
+    ValueError("Please enter an amount of minutes less than 60")
 elif (timestart[0] or timeend[0]) > 24:
-    return ValueError("Please use 24hour clock times")
+    ValueError("Please use 24hour clock times")
 
-opentime =[,]
+opentime =[0,0]
 opentime[0] =abs( timeend[0] - timestart[1])
 if timeend[1] < timestart[1]:
     opentime[0]-=1
@@ -277,7 +277,7 @@ def main(length, seconds, side_attack, tryanddelay):
                     buttonpressed()
                     if incorrect > 3:
                         incorrect = 0
-                        position = 0 # only sends them back to the start on their third incorrect press                        
+                        position = 0 # only sends them back to the start on their third incorrect press
                         ledset("red",True)
                         sleepytime(1000)
                         ledset("red",False)
@@ -292,7 +292,7 @@ def main(length, seconds, side_attack, tryanddelay):
                             os.system('clear')
                             print("LOCKED " + str(numseconds))
                             sleepytime(1000)
-                    
+
             if (index == 0):
                 eleven = 1
                 ten = 0
@@ -326,24 +326,24 @@ def sleepytime(length): #assumes length is an int in ms
 def open_csv():
     file = "AccessLog.csv"
     f = "data.dat"
-	
+
     header = False
 
     if not os.path.exists(file):
-	header = True
+    	header = True
 
     csv = open(file,"a")
     dat = open(f,"a")
 
     if header:
-	csv.write("Time, Action\n")
+        csv.write("Time, Action\n")
 
     csv.write(time.asctime(time.localtime())+", Start Lock \n")
 
     t = time.ctime().split(' ')[3].split(":")
     t = t[0]+t[1]+t[2]
     dat.write(t+" 0\n")
-	
+
     dat.close()
     csv.close()
 
@@ -352,27 +352,27 @@ def write_csv(text):
     csv = open("AccessLog.csv","a")
     csv.write(time.asctime(time.localtime())+", "+text+ "\n")
     csv.close()
-	
+
     if "ac" in text:
-	num = 2
+        num = 2
     elif "de" in text:
-	num = 1
+        num = 1
     else:
-	num = 0
-	
+        num = 0
+
     dat = open("data.dat","a")
     t = time.ctime().split(' ')[3].split(":")
     t = t[0]+t[1]+t[2]
-    dat.write(t+" "+str(num)+"\n")    
+    dat.write(t+" "+str(num)+"\n")
     dat.close()
 
 #This runs the main loop. If it is outside of access times then it will turn on the red led and timeout leds and stop
-if (opentime[0] and opentime[1])==0   
+if (opentime[0] and opentime[1])==0:
     try:
         main(length, 0, side_attack,tryanddelay)
     except:
         write_csv("Stop Lock")
-	os.system('gnuplot "graph.p"')
+    os.system('gnuplot "graph.p"')
     GPIO.cleanup()
 else:
     seconds = 60*60*opentime[0]
@@ -382,7 +382,7 @@ else:
             main(length,seconds, side_attack,tryanddelay)
         except:
             write_csv("Stop Lock")
-	    os.system('gnuplot "graph.p"')
+        os.system('gnuplot "graph.p"')
         GPIO.cleanup()
     else:
         GPIO.output(onboardgpio[0],1)
