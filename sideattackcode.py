@@ -189,13 +189,9 @@ def improved_brute(bus):
             while column3 <= 12:
                 while column4 <= 12:
                     send_digit(possible_values[column4], bus)
-                    time.sleep(1)
                     send_digit(possible_values[column3], bus)
-                    time.sleep(1)
                     send_digit(possible_values[column2], bus)
-                    time.sleep(1)
                     send_digit(possible_values[column1], bus)
-                    time.sleep(1)
                     column4 +=1
                 column3 +=1
                 column4 = 0

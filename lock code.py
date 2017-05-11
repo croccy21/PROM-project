@@ -8,6 +8,7 @@ side_attack = True
 #This is the setup fo the Maximum Try Lockout
 #number of trys first, then delay
 #if number of trys  = 0 then won't run
+tryanddelay=[]
 tryanddelay[0] = 4
 tryanddelay[1] = 60
 
